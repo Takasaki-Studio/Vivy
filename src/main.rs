@@ -3,7 +3,7 @@ use std::path::Path;
 use clap::Parser;
 
 use crate::cli::Args;
-use crate::docker::execute_docker;
+use crate::docker::{execute_docker_compose_down, execute_docker_compose_up};
 use crate::env::create_env;
 use crate::folder::check_folder;
 use crate::git::{git_clone, git_pull};
@@ -24,5 +24,6 @@ fn main() {
     }
     git_pull(&args.path);
     create_env(path, args.env);
-    execute_docker(&args.path);
+    execute_docker_compose_down(&args.path);
+    execute_docker_compose_up(&args.path);
 }
