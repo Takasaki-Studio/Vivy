@@ -24,6 +24,6 @@ fn main() {
     }
     git_pull(&args.path);
     create_env(path, args.env);
-    execute_docker_compose_down(&args.path);
-    execute_docker_compose_up(&args.path);
+    execute_docker_compose_down(&args.path, &args.docker_compose_file);
+    execute_docker_compose_up(&args.path, &args.docker_compose_file);
 }

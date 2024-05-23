@@ -12,5 +12,8 @@ pub struct Args {
     pub git: String,
     /// Docker envs
     #[arg(short, long)]
-    pub env: Vec<String>
+    pub env: Vec<String>,
+    /// Docker compose file
+    #[arg(short = 'f', long)]
+    pub docker_compose_file: Option<String>
 }
