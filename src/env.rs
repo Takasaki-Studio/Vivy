@@ -10,10 +10,7 @@ pub fn create_env(path: &Path, envs: Vec<String>) {
     }
     
     let mut file = File::create(file_path).expect("Fail create .env file");
-
-    for env in envs {
-        file.write(format!("{}\n", env).as_bytes()).expect("Fail write env");
-    }
+    file.write_all(envs.join("\n").as_bytes()).expect("Fail write env");
     
     println!("Success to create .env");
 }
