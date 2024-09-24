@@ -23,7 +23,7 @@ fn main() {
         git_clone(&args.path, &args.git);
     }
     git_pull(&args.path);
-    create_env(path, args.env);
+    create_env(path, args.env_file, args.env, args.update_envs);
     execute_docker_compose_down(&args.path, &args.docker_compose_file);
     execute_docker_compose_up(&args.path, &args.docker_compose_file);
 }
