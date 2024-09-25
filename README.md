@@ -16,7 +16,7 @@ Options:
   -u, --update-envs                                Append envs
   -E, --env-file <ENV_FILE>                        Env file location
   -f, --docker-compose-file <DOCKER_COMPOSE_FILE>  Docker compose file location
+  -d, --execution-dir <EXECUTION_DIR>              Execution dir
   -h, --help                                       Print help
   -V, --version                                    Print version
-
 ```

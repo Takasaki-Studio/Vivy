@@ -22,4 +22,7 @@ pub struct Args {
     /// Docker compose file location
     #[arg(short = 'f', long)]
     pub docker_compose_file: Option<String>,
+    /// Execution dir
+    #[arg(short = 'd', long)]
+    pub execution_dir: Option<String>,
 }
