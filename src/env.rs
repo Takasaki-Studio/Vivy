@@ -30,17 +30,17 @@ fn update_env(path: PathBuf, envs: Vec<String>) {
         .expect("Fail to read content");
 
     let old_envs = content.split('\n');
-    let mut new_env = Vec::new();
+    let mut new_env = envs.clone();
 
     for old_env in old_envs {
-        let mut key_value = old_env
+        let key_value = old_env
             .split('=')
             .map(String::from)
             .collect::<Vec<String>>();
         let new_value = get_env_value(&envs, &key_value[0]);
 
-        if let Some(value) = new_value {
-            key_value[1] = value;
+        if new_value.is_some() {
+            continue;
         }
 
         new_env.push(key_value.join("="))
