@@ -1,28 +1,26 @@
-use std::process::{Child, Command, Stdio};
+use std::process::{Command, Stdio};
 
-pub fn git_clone(path: &str, git: &str) {
-    let child: Child = Command::new("git")
+pub enum GitOperations<'a> {
+    Clone(&'a str),
+    Pull,
+}
+
+pub fn git(path: &str, op: GitOperations) {
+    let (args, op_name) = match op {
+        GitOperations::Pull => (vec!["pull"], "pull"),
+        GitOperations::Clone(repo) => (vec!["clone", repo], "clone"),
+    };
+
+    let cmd = Command::new("git")
         .args(["-C", path])
-        .args(["clone", git])
+        .args(args)
         .arg(".")
         .stdout(Stdio::piped())
         .spawn()
-        .expect("Fail clone repository");
+        .expect("Failed to spawn git");
 
-    child.wait_with_output().expect("Fail clone repository");
+    cmd.wait_with_output()
+        .unwrap_or_else(|_| panic!("Failed to {} repository", op_name));
 
-    println!("Success to clone {}", git);
-}
-
-pub fn git_pull(path: &str) {
-    let child: Child = Command::new("git")
-        .args(["-C", path])
-        .arg("pull")
-        .stdout(Stdio::piped())
-        .spawn()
-        .expect("Fail pull repository");
-
-    child.wait_with_output().expect("Fail pull repository");
-
-    println!("Success to pull");
+    println!("{} success", op_name);
 }

@@ -1,12 +1,10 @@
-use std::path::Path;
-
-use clap::Parser;
-
 use crate::cli::Args;
-use crate::docker::{execute_docker_compose_down, execute_docker_compose_up};
+use crate::docker::{execute_docker_compose, ComposeOperations};
 use crate::env::create_env;
 use crate::folder::check_folder;
-use crate::git::{git_clone, git_pull};
+use crate::git::{git, GitOperations};
+use clap::Parser;
+use std::path::Path;
 
 mod cli;
 mod docker;
@@ -20,9 +18,10 @@ fn main() {
     let path = Path::new(&args.path);
 
     if !check_folder(path) {
-        git_clone(&args.path, &args.git);
+        git(&args.path, GitOperations::Clone(&args.git));
     }
-    git_pull(&args.path);
+
+    git(&args.path, GitOperations::Pull);
     create_env(path, args.env_file, args.env, args.update_envs);
 
     let final_path = if let Some(dir) = args.execution_dir {
@@ -35,6 +34,15 @@ fn main() {
         Path::new(path).to_str().expect("Fail get path").to_string()
     };
 
-    execute_docker_compose_down(&final_path, &args.docker_compose_file);
-    execute_docker_compose_up(&final_path, &args.docker_compose_file);
+    execute_docker_compose(
+        &final_path,
+        &args.docker_compose_file,
+        ComposeOperations::Down,
+    );
+
+    execute_docker_compose(
+        &final_path,
+        &args.docker_compose_file,
+        ComposeOperations::Up,
+    )
 }
