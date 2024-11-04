@@ -8,13 +8,12 @@ pub enum GitOperations<'a> {
 pub fn git(path: &str, op: GitOperations) {
     let (args, op_name) = match op {
         GitOperations::Pull => (vec!["pull"], "pull"),
-        GitOperations::Clone(repo) => (vec!["clone", repo], "clone"),
+        GitOperations::Clone(repo) => (vec!["clone", repo, "."], "clone"),
     };
 
     let cmd = Command::new("git")
         .args(["-C", path])
         .args(args)
-        .arg(".")
         .stdout(Stdio::piped())
         .spawn()
         .expect("Failed to spawn git");
