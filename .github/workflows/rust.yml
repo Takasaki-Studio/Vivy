@@ -11,10 +11,13 @@ env:
 
 jobs:
   build:
-    name: Build 
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
+    - uses: dtolnay/rust-toolchain@stable
+      with:
+        target: x86_64-unknown-linux-musl
     - name: Build
       run: cargo build --verbose
