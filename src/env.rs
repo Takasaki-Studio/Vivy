@@ -1,4 +1,5 @@
-use std::fs::{remove_file, File};
+use clap::builder::Str;
+use std::fs::{File, remove_file};
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
 
@@ -14,9 +15,7 @@ pub fn create_env(path: &Path, env_file: Option<String>, envs: Vec<String>, upda
         remove_file(&file_path).expect("Fail to remove .env file");
     }
 
-    let mut file = File::create(file_path).expect("Fail create .env file");
-    file.write_all(envs.join("\n").as_bytes())
-        .expect("Fail write env");
+    write_env(&file_path, envs);
 
     println!("Success to create .env");
 }
@@ -47,11 +46,7 @@ fn update_env(path: PathBuf, envs: Vec<String>) {
     }
 
     remove_file(&path).expect("Fail to remove .env file");
-
-    let mut new_file = File::create(path).expect("Fail to create .env file");
-    new_file
-        .write_all(new_env.join("\n").as_bytes())
-        .expect("Fail to update .env file");
+    write_env(&path, new_env);
 }
 
 fn get_env_value(envs: &Vec<String>, key: &str) -> Option<String> {
@@ -64,4 +59,31 @@ fn get_env_value(envs: &Vec<String>, key: &str) -> Option<String> {
     }
 
     None
+}
+
+fn write_env(path: &PathBuf, env: Vec<String>) {
+    let mut file = File::create(path).expect("Fail to create .env file");
+    file.write_all(
+        env.iter()
+            .map(prepare_env)
+            .collect::<Vec<String>>()
+            .join("\n")
+            .as_bytes(),
+    )
+    .expect("Fail to update .env file");
+}
+
+fn prepare_env(env: &String) -> String {
+    let parts = env.split('=').collect::<Vec<&str>>();
+    let mut env_value = String::from(parts[1]);
+
+    if !env_value.starts_with('"') {
+        env_value.insert(0, '"');
+    }
+
+    if !env_value.ends_with('"') {
+        env_value.push('"');
+    }
+
+    format!("{}={}", parts[0], env_value)
 }
