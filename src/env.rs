@@ -1,4 +1,3 @@
-use clap::builder::Str;
 use std::fs::{File, remove_file};
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
